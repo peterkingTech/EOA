@@ -47,6 +47,7 @@ Deno.serve(async (req: Request) => {
       'payment_method_types[0]': 'card',
       'billing_address_collection': 'required',
       'locale': 'auto',
+      'submit_type': 'pay',
     });
 
     if (customer_email && customer_email.trim() !== '') {
