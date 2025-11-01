@@ -177,7 +177,7 @@ const Collection: React.FC<CollectionProps> = ({
       colors: ['White', 'Beige','Black'],
       description: "Comfortable t-shirt from the TUMI collection, perfect for everyday wear.",
       verse: "Psalm 46:5 God is within her, she will not fall; God will help her at break of day",
-      inStock: false,
+      inStock: true,
     },
     {
       id: 6,
@@ -211,7 +211,7 @@ const Collection: React.FC<CollectionProps> = ({
       description: "Premium t-shirt from the TUMI collection for men.",
       verse:  ""
       ,
-      inStock: false,
+      inStock: true,
     },
     // Keep other products but remove duplicates and old t-shirt entries
     {
