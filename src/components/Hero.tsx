@@ -26,12 +26,17 @@ type Slide = {
   caption: string;
   subtitle?: string;
   collection?: 'tumie' | 'laveira';
+  price?: number;
 };
 
 const Hero: React.FC = () => {
-  const { t } = useLocalization();
+  const { t, formatPrice } = useLocalization();
   const navigate = useNavigate();
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  const handleCaptionClick = (collection: 'tumie' | 'laveira') => {
+    navigate('/shop', { state: { scrollToCollection: collection } });
+  };
 
   /*
     FIX #5: Content Order - Exact sequence as requested
@@ -64,31 +69,36 @@ const Hero: React.FC = () => {
       type: "image" as const,
       src: "https://ggcxbhkzkfuyyoxguizy.supabase.co/storage/v1/object/public/Tumi%20T-shirt/TM-TS-WT-F-11.jpg",
       caption: "TUMI COLLECTION",
-      collection: 'tumie' as const
+      collection: 'tumie' as const,
+      price: 34.99
     },
     {
       type: "image" as const,
       src: "https://ggcxbhkzkfuyyoxguizy.supabase.co/storage/v1/object/public/Tumi%20T-shirt/TM-TS-BL-F-2.jpg",
       caption: "TUMI COLLECTION",
-      collection: 'tumie' as const
+      collection: 'tumie' as const,
+      price: 34.99
     },
     {
       type: "image" as const,
       src: "https://ggcxbhkzkfuyyoxguizy.supabase.co/storage/v1/object/public/Tumi%20T-shirt/TM-TS-WT-F-8.jpg",
       caption: "TUMI COLLECTION",
-      collection: 'tumie' as const
+      collection: 'tumie' as const,
+      price: 34.99
     },
     {
       type: "image" as const,
       src: "https://ggcxbhkzkfuyyoxguizy.supabase.co/storage/v1/object/public/Tumi%20T-shirt/TM-TS-WB-MF-5.jpg",
       caption: "TUMI COLLECTION",
-      collection: 'tumie' as const
+      collection: 'tumie' as const,
+      price: 34.99
     },
     {
       type: "image" as const,
       src: "https://ggcxbhkzkfuyyoxguizy.supabase.co/storage/v1/object/public/Tumi%20T-shirt/TM-TS-WT-M-2.jpg",
       caption: "TUMI COLLECTION",
-      collection: 'tumie' as const
+      collection: 'tumie' as const,
+      price: 34.99
     },
   ];
 
@@ -98,31 +108,36 @@ const Hero: React.FC = () => {
       type: "image" as const,
       src: "https://ggcxbhkzkfuyyoxguizy.supabase.co/storage/v1/object/public/LV%20Edited%20BG/LV-GP-F-4.jpg",
       caption: "LA VEIRA COLLECTION",
-      collection: 'laveira' as const
+      collection: 'laveira' as const,
+      price: 45.00
     },
     {
       type: "image" as const,
       src: "https://ggcxbhkzkfuyyoxguizy.supabase.co/storage/v1/object/public/LV%20Cropped/LV-GP-M-1.jpg",
       caption: "LA VEIRA COLLECTION",
-      collection: 'laveira' as const
+      collection: 'laveira' as const,
+      price: 45.00
     },
     {
       type: "image" as const,
       src: "https://ggcxbhkzkfuyyoxguizy.supabase.co/storage/v1/object/public/LV%20Edited%20BG/LV-GP-F-5.jpg",
       caption: "LA VEIRA COLLECTION",
-      collection: 'laveira' as const
+      collection: 'laveira' as const,
+      price: 45.00
     },
     {
       type: "image" as const,
       src: "https://ggcxbhkzkfuyyoxguizy.supabase.co/storage/v1/object/public/LV%20Edited%20BG/LV-GP-16.jpg",
       caption: "LA VEIRA COLLECTION",
-      collection: 'laveira' as const
+      collection: 'laveira' as const,
+      price: 45.00
     },
     {
       type: "image" as const,
       src: "https://ggcxbhkzkfuyyoxguizy.supabase.co/storage/v1/object/public/LV%20Cropped/LV-GP-1.jpg",
       caption: "LA VEIRA COLLECTION",
-      collection: 'laveira' as const
+      collection: 'laveira' as const,
+      price: 45.00
     },
   ];
 
@@ -283,6 +298,12 @@ const Hero: React.FC = () => {
                     className="w-full h-full object-cover object-[50%_20%]"
                 />
                 <div className="absolute inset-0 bg-black/30" />
+                {/* Price Tag */}
+                {slide.price && (
+                  <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm text-black px-4 py-2 rounded-lg shadow-lg">
+                    <p className="text-lg md:text-xl font-medium">{formatPrice(slide.price)}</p>
+                  </div>
+                )}
                 {/* FIX #4: Clickable caption */}
                 <div
                     onClick={() => handleCaptionClick('tumie')}
@@ -341,6 +362,12 @@ const Hero: React.FC = () => {
                     className="w-full h-full object-cover object-[50%_20%]"
                 />
                 <div className="absolute inset-0 bg-black/30" />
+                {/* Price Tag */}
+                {slide.price && (
+                  <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm text-black px-4 py-2 rounded-lg shadow-lg">
+                    <p className="text-lg md:text-xl font-medium">{formatPrice(slide.price)}</p>
+                  </div>
+                )}
                 {/* FIX #4: Clickable caption */}
                 <div
                     onClick={() => handleCaptionClick('laveira')}
