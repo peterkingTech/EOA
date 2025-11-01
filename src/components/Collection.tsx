@@ -714,13 +714,6 @@ const Collection: React.FC<CollectionProps> = ({
                         </button>
                       </div>
 
-                      {/* Price Tag Badge */}
-                      <div className="absolute bottom-2 left-2">
-                        <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg border border-gray-200">
-                          <span className="text-sm font-medium text-gray-900">{formatPrice(product.price)}</span>
-                        </div>
-                      </div>
-
                       {/* Coming Soon Badge */}
                       {product.isComingSoon && (
                           <div className="absolute top-1 left-1">
