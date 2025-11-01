@@ -249,24 +249,37 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-3">Color</h3>
                     <div className="flex flex-wrap gap-2">
-                      {product.colors.map((color) => (
+                      {product.colors.map((color) => {
+                        const isOutOfStock = product.colorStock && product.colorStock[color.toLowerCase()] === false;
+                        return (
                           <button
                               key={color}
                               onClick={() => {
-                                setSelectedColor(color);
-                                setSelectedProductColor(color);
-                                setCurrentImageIndex(0);
-                                setColorError('');
+                                if (!isOutOfStock) {
+                                  setSelectedColor(color);
+                                  setSelectedProductColor(color);
+                                  setCurrentImageIndex(0);
+                                  setColorError('');
+                                }
                               }}
-                              className={`px-4 py-2 border rounded-lg font-medium transition-all capitalize ${
-                                  selectedColor === color
+                              disabled={isOutOfStock}
+                              className={`px-4 py-2 border rounded-lg font-medium transition-all capitalize relative ${
+                                  isOutOfStock
+                                      ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
+                                      : selectedColor === color
                                       ? 'border-black bg-black text-white'
                                       : 'border-gray-300 hover:border-gray-400'
                               }`}
                           >
                             {color}
+                            {isOutOfStock && (
+                              <span className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded">Out of Stock</span>
+                              </span>
+                            )}
                           </button>
-                      ))}
+                        );
+                      })}
                     </div>
                     {colorError && (
                         <p className="text-red-500 text-sm mt-2">{colorError}</p>

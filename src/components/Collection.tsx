@@ -175,6 +175,11 @@ const Collection: React.FC<CollectionProps> = ({
       gender: 'female',
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       colors: ['White', 'Beige','Black'],
+      colorStock: {
+        white: false,
+        beige: true,
+        black: true
+      },
       description: "Comfortable t-shirt from the TUMI collection, perfect for everyday wear.",
       verse: "Psalm 46:5 God is within her, she will not fall; God will help her at break of day",
       inStock: true,
@@ -208,6 +213,11 @@ const Collection: React.FC<CollectionProps> = ({
       gender: 'male',
       sizes: ['S', 'M', 'L', 'XL', 'XXL'],
       colors: ['Black','White', 'Beige'],
+      colorStock: {
+        black: true,
+        white: false,
+        beige: true
+      },
       description: "Premium t-shirt from the TUMI collection for men.",
       verse:  ""
       ,

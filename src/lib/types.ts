@@ -16,6 +16,7 @@ export interface Product {
   gender: 'male' | 'female' | 'unisex';
   sizes: string[];
   colors: string[];
+  colorStock?: { [color: string]: boolean };
   description: string;
   verse: string;
   isNew?: boolean;
