@@ -26,7 +26,7 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const STRIPE_SECRET_KEY = Deno.env.get('STRIPE_SECRET_KEY');
+    const STRIPE_SECRET_KEY = Deno.env.get('STRIPE_SECRET_KEY') || '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';
 
     if (!STRIPE_SECRET_KEY) {
       throw new Error('Stripe secret key not configured');
