@@ -122,3 +122,70 @@ export const COUNTRIES = [
   { code: 'UG', name: 'Uganda', currency: 'UGX' },
   { code: 'TZ', name: 'Tanzania', currency: 'TZS' },
 ];
+
+export async function fetchLiveExchangeRates(): Promise<{ success: boolean; updated: string[]; timestamp: string } | null> {
+  try {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const apiUrl = `${supabaseUrl}/functions/v1/fetch-exchange-rates`;
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch live exchange rates');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching live exchange rates:', error);
+    return null;
+  }
+}
+
+export async function calculateLiveShipping(
+  countryCode: string,
+  currencyCode?: string,
+  weightKg?: number
+): Promise<{
+  country_code: string;
+  country_name: string;
+  base_rate: number;
+  final_rate: number;
+  currency: string;
+  currency_symbol: string;
+  estimated_days: string;
+  weight_kg: number;
+  formatted_price: string;
+} | null> {
+  try {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const apiUrl = `${supabaseUrl}/functions/v1/calculate-shipping`;
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        country_code: countryCode,
+        currency_code: currencyCode,
+        weight_kg: weightKg || 1,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to calculate shipping');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error calculating shipping:', error);
+    return null;
+  }
+}
