@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Plus, Minus, ShoppingBag, Lock } from 'lucide-react';
 import { CartItem } from '../../lib/types';
 import { useLocalization } from '../../contexts/LocalizationContext';
+import { getShippingRateByCountry, getExchangeRateByCurrency, calculateShippingCost, formatShippingPrice, COUNTRIES, ShippingRate, ExchangeRate } from '../../lib/shipping';
 
 interface CartModalProps {
   isOpen: boolean;
@@ -12,11 +13,9 @@ interface CartModalProps {
   onClearCart: () => void;
 }
 
-// --- CONFIG ---
-const FREE_SHIPPING_THRESHOLD = 100;   // Free shipping when subtotal > 100
-const SHIPPING_FLAT = 4.90;              // Otherwise flat shipping
-const DELIVERY_METHOD = 'Hermes';      // Shipper label shown to customers
-// --------------
+const FREE_SHIPPING_THRESHOLD = 100;
+const SHIPPING_FLAT = 4.90;
+const DELIVERY_METHOD = 'Hermes';
 
 const CartModal: React.FC<CartModalProps> = ({
                                                isOpen,
@@ -27,22 +26,49 @@ const CartModal: React.FC<CartModalProps> = ({
                                              }) => {
   const { formatPrice, t } = useLocalization();
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [shippingRate, setShippingRate] = useState<ShippingRate | null>(null);
+  const [exchangeRate, setExchangeRate] = useState<ExchangeRate | null>(null);
+  const [shippingCost, setShippingCost] = useState(0);
+
+  useEffect(() => {
+    if (selectedCountry) {
+      loadShippingData(selectedCountry);
+    }
+  }, [selectedCountry]);
+
+  const loadShippingData = async (countryCode: string) => {
+    const country = COUNTRIES.find(c => c.code === countryCode);
+    if (!country) return;
+
+    const rate = await getShippingRateByCountry(countryCode);
+    const exchange = await getExchangeRateByCurrency(country.currency);
+
+    if (rate && exchange) {
+      setShippingRate(rate);
+      setExchangeRate(exchange);
+      const cost = calculateShippingCost(rate.base_rate, country.currency, exchange.rate_to_eur);
+      setShippingCost(cost);
+    }
+  };
 
   if (!isOpen) return null;
 
-  // Subtotal (no tax, no discounts)
   const subtotal = items.reduce(
       (sum, item) => sum + item.product.price * item.quantity,
       0
   );
 
-  // Shipping rule
-  const shipping = subtotal > FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FLAT;
+  const shipping = subtotal > FREE_SHIPPING_THRESHOLD ? 0 : (shippingCost > 0 ? shippingCost / 100 : SHIPPING_FLAT);
 
-  // Total = items + shipping
   const total = subtotal + shipping;
 
   const handleSecureCheckout = async () => {
+    if (!selectedCountry) {
+      alert('Please select a shipping country');
+      return;
+    }
+
     setIsProcessingPayment(true);
     try {
       const { createCheckoutSession } = await import('../../lib/stripe');
@@ -178,32 +204,69 @@ const CartModal: React.FC<CartModalProps> = ({
           {/* Summary & Checkout */}
           {items.length > 0 && (
               <div className="border-t border-gray-200 bg-white p-4 space-y-4">
-                <div className="space-y-1 text-sm text-gray-700">
-                  <div className="flex justify-between">
-                    <span>Subtotal</span>
-                    <span>{formatPrice(subtotal)}</span>
+                <div className="space-y-3">
+                  {/* Country Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Shipping Country *
+                    </label>
+                    <select
+                      value={selectedCountry}
+                      onChange={(e) => setSelectedCountry(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent text-sm"
+                    >
+                      <option value="">Select country...</option>
+                      {COUNTRIES.map((country) => (
+                        <option key={country.code} value={country.code}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
-                  {/* NEW: Delivery Method */}
-                  <div className="flex justify-between">
-                    <span>Delivery Method</span>
-                    <span>{DELIVERY_METHOD}</span>
-                  </div>
+                  <div className="space-y-1 text-sm text-gray-700">
+                    <div className="flex justify-between">
+                      <span>Subtotal</span>
+                      <span>{formatPrice(subtotal)}</span>
+                    </div>
 
-                  <div className="flex justify-between">
-                    <span>Shipping</span>
-                    <span>{shipping === 0 ? 'Free' : formatPrice(shipping)}</span>
-                  </div>
+                    {selectedCountry && shippingRate && (
+                      <div className="flex justify-between text-xs text-gray-500">
+                        <span>Delivery to {shippingRate.country_name}</span>
+                        <span>{shippingRate.estimated_days}</span>
+                      </div>
+                    )}
 
-                  <div className="flex justify-between font-bold pt-2 border-t">
-                    <span>{t('total')}</span>
-                    <span>{formatPrice(total)}</span>
+                    <div className="flex justify-between">
+                      <span>Delivery Method</span>
+                      <span>{DELIVERY_METHOD}</span>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span>Shipping</span>
+                      <span>
+                        {!selectedCountry ? (
+                          <span className="text-gray-400">Select country</span>
+                        ) : shipping === 0 ? (
+                          'Free'
+                        ) : exchangeRate ? (
+                          formatShippingPrice(shippingCost, exchangeRate.symbol, exchangeRate.currency_code)
+                        ) : (
+                          formatPrice(shipping)
+                        )}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between font-bold pt-2 border-t">
+                      <span>{t('total')}</span>
+                      <span>{formatPrice(total)}</span>
+                    </div>
                   </div>
                 </div>
 
                 <button
                     onClick={handleSecureCheckout}
-                    disabled={isProcessingPayment}
+                    disabled={isProcessingPayment || !selectedCountry}
                     className="w-full bg-black text-white py-4 rounded font-medium hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isProcessingPayment ? (
@@ -218,6 +281,9 @@ const CartModal: React.FC<CartModalProps> = ({
                       </>
                   )}
                 </button>
+                {!selectedCountry && (
+                  <p className="text-xs text-red-500 text-center">Please select a shipping country to proceed</p>
+                )}
               </div>
           )}
         </div>
