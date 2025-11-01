@@ -17,6 +17,7 @@ import ReturnPolicy from './components/InfoPages/ReturnPolicy';
 //import LaunchPage from './components/LaunchPage/LaunchPage';
 import LearnMorePage from './components/LaunchPage/LearnMorePage';
 import SuccessPage from './components/SuccessPage';
+import PaymentRedirect from './components/PaymentRedirect';
 import { Product, CartItem } from './lib/types';
 import WelcomeModal from './components/WelcomeModal';
 import { AuthProvider } from './contexts/AuthContext';
@@ -313,8 +314,8 @@ const App: React.FC = () => {
             <Route path="/" element={<ShopApp />} />
             <Route path="/learn-more" element={<LearnMorePage />} />
             <Route path="/success" element={<SuccessPage />} />
-
-
+            <Route path="/payment-redirect" element={<PaymentRedirect />} />
+            <Route path="/payment-redirects" element={<PaymentRedirect />} />
 
             <Route path="/admin/login" element={<Login />} />
             <Route
