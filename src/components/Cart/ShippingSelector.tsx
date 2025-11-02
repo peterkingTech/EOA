@@ -83,6 +83,14 @@ export default function ShippingSelector({ orderTotal, onShippingChange }: Shipp
     setLoading(true);
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const orderTotalInEuros = orderTotal / 100;
+
+      console.log('Calculating shipping for:', {
+        country_code: selectedCountry,
+        shipping_type: shippingType,
+        order_total: orderTotalInEuros,
+      });
+
       const response = await fetch(`${supabaseUrl}/functions/v1/calculate-shipping-cost`, {
         method: 'POST',
         headers: {
@@ -91,15 +99,18 @@ export default function ShippingSelector({ orderTotal, onShippingChange }: Shipp
         body: JSON.stringify({
           country_code: selectedCountry,
           shipping_type: shippingType,
-          order_total: orderTotal,
+          order_total: orderTotalInEuros,
         }),
       });
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Shipping API error:', errorText);
         throw new Error('Failed to calculate shipping');
       }
 
       const data = await response.json();
+      console.log('Shipping calculation result:', data);
       setCalculation(data);
       onShippingChange(data);
     } catch (error) {

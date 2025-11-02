@@ -33,6 +33,8 @@ const CartModal: React.FC<CartModalProps> = ({
   );
 
   const handleSecureCheckout = async () => {
+    console.log('Checkout attempt - shipping calculation:', shippingCalculation);
+
     if (!shippingCalculation) {
       alert('Please select a shipping country and method');
       return;
@@ -183,6 +185,17 @@ const CartModal: React.FC<CartModalProps> = ({
                   </div>
                 </div>
 
+                {shippingCalculation && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-green-700 font-medium">✓ Shipping configured</span>
+                      <span className="text-green-600">
+                        {shippingCalculation.zone_name} - {shippingCalculation.shipping_type}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 <button
                     onClick={handleSecureCheckout}
                     disabled={isProcessingPayment || !shippingCalculation}
@@ -201,7 +214,7 @@ const CartModal: React.FC<CartModalProps> = ({
                   )}
                 </button>
                 {!shippingCalculation && (
-                  <p className="text-xs text-red-500 text-center">Please select shipping options to proceed</p>
+                  <p className="text-xs text-red-500 text-center">Please select shipping options above to proceed</p>
                 )}
               </div>
           )}
