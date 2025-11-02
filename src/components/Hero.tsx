@@ -237,7 +237,7 @@ const Hero: React.FC = () => {
               loop
               muted
               playsInline
-              preload="auto"
+              preload="metadata"
               className="w-full h-full object-cover"
               style={{ objectFit: 'cover' }}
           />
@@ -265,7 +265,7 @@ const Hero: React.FC = () => {
               loop
               muted
               playsInline
-              preload="auto"
+              preload="metadata"
               className="w-full h-full object-cover"
               style={{ objectFit: 'cover' }}
           />
@@ -295,6 +295,7 @@ const Hero: React.FC = () => {
                 <img
                     src={slide.src}
                     alt={slide.caption}
+                    loading={idx === 0 ? "eager" : "lazy"}
                     className="w-full h-full object-cover object-[50%_20%]"
                 />
                 <div className="absolute inset-0 bg-black/30" />
@@ -359,6 +360,7 @@ const Hero: React.FC = () => {
                 <img
                     src={slide.src}
                     alt={slide.caption}
+                    loading={idx === 0 ? "eager" : "lazy"}
                     className="w-full h-full object-cover object-[50%_20%]"
                 />
                 <div className="absolute inset-0 bg-black/30" />
@@ -424,6 +426,7 @@ const Hero: React.FC = () => {
                 <img
                     src={slide.src}
                     alt={slide.caption}
+                    loading="lazy"
                     className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/40" />

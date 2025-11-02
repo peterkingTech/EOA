@@ -663,6 +663,7 @@ const Collection: React.FC<CollectionProps> = ({
                       <img
                           src={isHovered && currentImages[1] ? currentImages[1] : currentImages[currentIndex]}
                           alt={product.name}
+                          loading="lazy"
                           className="w-full h-full object-cover object-[center_top] transition-all duration-300 group-hover:scale-105"
                           style={{ objectPosition: 'center 0%' }}
                           onError={(e) => {

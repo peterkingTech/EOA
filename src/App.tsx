@@ -1,33 +1,33 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Header, { FilterOptions } from './components/Header';
 import Hero from './components/Hero';
 import Collection from './components/Collection';
 import BrandStory from './components/BrandStory';
 import Footer from './components/Footer';
-import CartModal from './components/Cart/CartModal';
-import WishlistModal from './components/Wishlist/WishlistModal';
-import SizeGuide from './components/InfoPages/SizeGuide';
-import ShippingInfo from './components/InfoPages/ShippingInfo';
-import ReturnsProcess from './components/InfoPages/ReturnsProcess';
-import ContactUs from './components/InfoPages/ContactUs';
-import PrivacyPolicy from './components/InfoPages/PrivacyPolicy';
-import TermsOfService from './components/InfoPages/TermsOfService';
-import ReturnPolicy from './components/InfoPages/ReturnPolicy';
-//import LaunchPage from './components/LaunchPage/LaunchPage';
-import LearnMorePage from './components/LaunchPage/LearnMorePage';
-import SuccessPage from './components/SuccessPage';
-import PaymentRedirect from './components/PaymentRedirect';
 import { Product, CartItem } from './lib/types';
-import WelcomeModal from './components/WelcomeModal';
 import { AuthProvider } from './contexts/AuthContext';
-import Login from './pages/admin/Login';
-import Dashboard from './pages/admin/Dashboard';
-import Products from './pages/admin/Products';
-import Orders from './pages/admin/Orders';
-import Settings from './pages/admin/Settings';
-import AdminLayout from './components/Admin/AdminLayout';
-import ProtectedRoute from './components/Admin/ProtectedRoute';
+
+const CartModal = lazy(() => import('./components/Cart/CartModal'));
+const WishlistModal = lazy(() => import('./components/Wishlist/WishlistModal'));
+const SizeGuide = lazy(() => import('./components/InfoPages/SizeGuide'));
+const ShippingInfo = lazy(() => import('./components/InfoPages/ShippingInfo'));
+const ReturnsProcess = lazy(() => import('./components/InfoPages/ReturnsProcess'));
+const ContactUs = lazy(() => import('./components/InfoPages/ContactUs'));
+const PrivacyPolicy = lazy(() => import('./components/InfoPages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./components/InfoPages/TermsOfService'));
+const ReturnPolicy = lazy(() => import('./components/InfoPages/ReturnPolicy'));
+const LearnMorePage = lazy(() => import('./components/LaunchPage/LearnMorePage'));
+const SuccessPage = lazy(() => import('./components/SuccessPage'));
+const PaymentRedirect = lazy(() => import('./components/PaymentRedirect'));
+const WelcomeModal = lazy(() => import('./components/WelcomeModal'));
+const Login = lazy(() => import('./pages/admin/Login'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const Products = lazy(() => import('./pages/admin/Products'));
+const Orders = lazy(() => import('./pages/admin/Orders'));
+const Settings = lazy(() => import('./pages/admin/Settings'));
+const AdminLayout = lazy(() => import('./components/Admin/AdminLayout'));
+const ProtectedRoute = lazy(() => import('./components/Admin/ProtectedRoute'));
 
 function ShopApp() {
 
@@ -245,63 +245,83 @@ function ShopApp() {
         <Footer onNavigateToSection={handleNavigateToSection} />
 
         {/* Cart Modal */}
-        <CartModal
-            isOpen={showCart}
-            onClose={() => setShowCart(false)}
-            items={cartItems}
-            onUpdateQuantity={handleUpdateCartQuantity}
-            onRemoveItem={handleRemoveFromCart}
-            onClearCart={handleClearCart}
-        />
+        <Suspense fallback={null}>
+          <CartModal
+              isOpen={showCart}
+              onClose={() => setShowCart(false)}
+              items={cartItems}
+              onUpdateQuantity={handleUpdateCartQuantity}
+              onRemoveItem={handleRemoveFromCart}
+              onClearCart={handleClearCart}
+          />
+        </Suspense>
 
         {/* Wishlist Modal */}
-        <WishlistModal
-            isOpen={showWishlist}
-            onClose={() => setShowWishlist(false)}
-            items={wishlistItems}
-            onRemoveItem={handleRemoveFromWishlist}
-            onAddToCart={handleAddToCart}
-            onClearWishlist={handleClearWishlist}
-        />
+        <Suspense fallback={null}>
+          <WishlistModal
+              isOpen={showWishlist}
+              onClose={() => setShowWishlist(false)}
+              items={wishlistItems}
+              onRemoveItem={handleRemoveFromWishlist}
+              onAddToCart={handleAddToCart}
+              onClearWishlist={handleClearWishlist}
+          />
+        </Suspense>
 
         {/* Info Page Modals */}
-        <SizeGuide
-            isOpen={showSizeGuide}
-            onClose={() => setShowSizeGuide(false)}
-        />
+        <Suspense fallback={null}>
+          <SizeGuide
+              isOpen={showSizeGuide}
+              onClose={() => setShowSizeGuide(false)}
+          />
+        </Suspense>
 
-        <ShippingInfo
-            isOpen={showShippingInfo}
-            onClose={() => setShowShippingInfo(false)}
-        />
+        <Suspense fallback={null}>
+          <ShippingInfo
+              isOpen={showShippingInfo}
+              onClose={() => setShowShippingInfo(false)}
+          />
+        </Suspense>
 
-        <ReturnsProcess
-            isOpen={showReturnsProcess}
-            onClose={() => setShowReturnsProcess(false)}
-        />
+        <Suspense fallback={null}>
+          <ReturnsProcess
+              isOpen={showReturnsProcess}
+              onClose={() => setShowReturnsProcess(false)}
+          />
+        </Suspense>
 
-        <ContactUs
-            isOpen={showContactUs}
-            onClose={() => setShowContactUs(false)}
-        />
+        <Suspense fallback={null}>
+          <ContactUs
+              isOpen={showContactUs}
+              onClose={() => setShowContactUs(false)}
+          />
+        </Suspense>
 
-        <PrivacyPolicy
-            isOpen={showPrivacyPolicy}
-            onClose={() => setShowPrivacyPolicy(false)}
-        />
+        <Suspense fallback={null}>
+          <PrivacyPolicy
+              isOpen={showPrivacyPolicy}
+              onClose={() => setShowPrivacyPolicy(false)}
+          />
+        </Suspense>
 
-        <TermsOfService
-            isOpen={showTermsOfService}
-            onClose={() => setShowTermsOfService(false)}
-        />
+        <Suspense fallback={null}>
+          <TermsOfService
+              isOpen={showTermsOfService}
+              onClose={() => setShowTermsOfService(false)}
+          />
+        </Suspense>
 
-        <ReturnPolicy
-            isOpen={showReturnPolicy}
-            onClose={() => setShowReturnPolicy(false)}
-        />
+        <Suspense fallback={null}>
+          <ReturnPolicy
+              isOpen={showReturnPolicy}
+              onClose={() => setShowReturnPolicy(false)}
+          />
+        </Suspense>
 
         {/* Welcome Modal */}
-        <WelcomeModal />
+        <Suspense fallback={null}>
+          <WelcomeModal />
+        </Suspense>
       </div>
   );
 }
@@ -310,29 +330,31 @@ const App: React.FC = () => {
   return (
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<ShopApp />} />
-            <Route path="/learn-more" element={<LearnMorePage />} />
-            <Route path="/success" element={<SuccessPage />} />
-            <Route path="/payment-redirect" element={<PaymentRedirect />} />
-            <Route path="/payment-redirects" element={<PaymentRedirect />} />
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="text-gray-600">Loading...</div></div>}>
+            <Routes>
+              <Route path="/" element={<ShopApp />} />
+              <Route path="/learn-more" element={<LearnMorePage />} />
+              <Route path="/success" element={<SuccessPage />} />
+              <Route path="/payment-redirect" element={<PaymentRedirect />} />
+              <Route path="/payment-redirects" element={<PaymentRedirect />} />
 
-            <Route path="/admin/login" element={<Login />} />
-            <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <AdminLayout />
-                  </ProtectedRoute>
-                }
-            >
-              <Route index element={<Navigate to="/admin/dashboard" replace />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="products" element={<Products />} />
-              <Route path="orders" element={<Orders />} />
-              <Route path="settings" element={<Settings />} />
-            </Route>
-          </Routes>
+              <Route path="/admin/login" element={<Login />} />
+              <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute>
+                      <AdminLayout />
+                    </ProtectedRoute>
+                  }
+              >
+                <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="products" element={<Products />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="settings" element={<Settings />} />
+              </Route>
+            </Routes>
+          </Suspense>
         </AuthProvider>
       </BrowserRouter>
   );
