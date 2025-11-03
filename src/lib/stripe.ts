@@ -130,7 +130,12 @@ export const createCheckoutSession = async (
       selectedSize?: string;
       selectedColor?: string;
     }>,
-    userEmail?: string | null
+    userEmail?: string | null,
+    shippingInfo?: {
+      shippingCost: number;
+      country: string;
+      countryName: string;
+    }
 ) => {
   try {
     console.log('Creating Stripe checkout session for items:', items);
@@ -179,12 +184,17 @@ export const createCheckoutSession = async (
           size: item.selectedSize,
           color: item.selectedColor,
           quantity: item.quantity
-        })))
+        }))),
+        shipping_country: shippingInfo?.countryName || '',
       }
     };
 
     if (userEmail) {
       requestBody.customer_email = userEmail;
+    }
+
+    if (shippingInfo && shippingInfo.shippingCost > 0) {
+      requestBody.shipping_cost = shippingInfo.shippingCost;
     }
 
     const response = await fetch(`${supabaseUrl}/functions/v1/create-checkout-session`, {

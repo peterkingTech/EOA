@@ -72,7 +72,11 @@ const CartModal: React.FC<CartModalProps> = ({
     setIsProcessingPayment(true);
     try {
       const { createCheckoutSession } = await import('../../lib/stripe');
-      await createCheckoutSession(items);
+      await createCheckoutSession(items, null, {
+        shippingCost: shipping,
+        country: selectedCountry,
+        countryName: COUNTRIES.find(c => c.code === selectedCountry)?.name || '',
+      });
     } catch (error: any) {
       console.error('Checkout error:', error);
       alert(`Checkout error: ${error?.message ?? error}`);

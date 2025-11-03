@@ -15,6 +15,7 @@ interface CheckoutRequest {
   cancel_url: string;
   customer_email?: string;
   metadata?: Record<string, string>;
+  shipping_cost?: number;
 }
 
 Deno.serve(async (req: Request) => {
@@ -32,7 +33,7 @@ Deno.serve(async (req: Request) => {
       throw new Error('Stripe secret key not configured');
     }
 
-    const { line_items, success_url, cancel_url, customer_email, metadata }: CheckoutRequest = await req.json();
+    const { line_items, success_url, cancel_url, customer_email, metadata, shipping_cost }: CheckoutRequest = await req.json();
 
     const allowedCountries = [
       'US', 'CA', 'GB', 'DE', 'FR', 'ES', 'IT', 'NL', 'BE', 'AT', 'CH',
@@ -62,6 +63,15 @@ Deno.serve(async (req: Request) => {
       params.append(`line_items[${index}][price]`, item.price);
       params.append(`line_items[${index}][quantity]`, item.quantity.toString());
     });
+
+    // Add shipping cost as a line item if provided
+    if (shipping_cost && shipping_cost > 0) {
+      const shippingCostInCents = Math.round(shipping_cost * 100);
+      params.append('line_items[' + line_items.length + '][price_data][currency]', 'eur');
+      params.append('line_items[' + line_items.length + '][price_data][product_data][name]', 'Shipping');
+      params.append('line_items[' + line_items.length + '][price_data][unit_amount]', shippingCostInCents.toString());
+      params.append('line_items[' + line_items.length + '][quantity]', '1');
+    }
 
     if (metadata) {
       Object.entries(metadata).forEach(([key, value]) => {
