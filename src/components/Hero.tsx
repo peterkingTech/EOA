@@ -299,12 +299,6 @@ const Hero: React.FC = () => {
                     className="w-full h-full object-cover object-[50%_20%]"
                 />
                 <div className="absolute inset-0 bg-black/30" />
-                {/* Price Tag */}
-                {slide.price && (
-                  <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm text-black px-4 py-2 rounded-lg shadow-lg">
-                    <p className="text-lg md:text-xl font-medium">{formatPrice(slide.price)}</p>
-                  </div>
-                )}
                 {/* FIX #4: Clickable caption */}
                 <div
                     onClick={() => handleCaptionClick('tumie')}
@@ -364,12 +358,6 @@ const Hero: React.FC = () => {
                     className="w-full h-full object-cover object-[50%_20%]"
                 />
                 <div className="absolute inset-0 bg-black/30" />
-                {/* Price Tag */}
-                {slide.price && (
-                  <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm text-black px-4 py-2 rounded-lg shadow-lg">
-                    <p className="text-lg md:text-xl font-medium">{formatPrice(slide.price)}</p>
-                  </div>
-                )}
                 {/* FIX #4: Clickable caption */}
                 <div
                     onClick={() => handleCaptionClick('laveira')}
